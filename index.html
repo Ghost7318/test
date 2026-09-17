@@ -44,6 +44,8 @@
             background: var(--bg-gradient);
             color: var(--text-color);
             padding: 10px;
+            padding-left: max(10px, env(safe-area-inset-left));
+            padding-right: max(10px, env(safe-area-inset-right));
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
             display: flex;
@@ -361,6 +363,17 @@
         .modal-controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
 
         canvas { touch-action: none; width: 100%; max-width: 100%; display: block; }
+        #intonation-canvas { max-width: none !important; }
+
+        /* スライドバー1つ化のためスクロールバーを非表示 */
+        .intonation-scroll-box {
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .intonation-scroll-box::-webkit-scrollbar {
+            display: none;
+        }
 
         .app-footer {
             text-align: center;
@@ -387,12 +400,28 @@
         }
         .guide-section h4 { margin: 0 0 4px 0; color: var(--primary); font-size: 0.95em; }
 
-        @media (max-width: 900px) {
+        /* スマホ縦画面 */
+        @media (max-width: 900px) and (orientation: portrait) {
             .container { grid-template-columns: 1fr; gap: 10px; }
             body { padding: 6px; }
             .app-header h1 { font-size: 1.25em; }
             .theme-selector-bar { justify-content: space-around; }
         }
+
+        /* スマホ横画面（Landscape）対応 */
+        @media (orientation: landscape) and (max-height: 600px) {
+            body { padding: 6px 12px; }
+            .app-header { margin-bottom: 6px; gap: 2px; }
+            .app-header h1 { font-size: 1.1em; }
+            .app-header p { font-size: 0.75em; }
+            .theme-selector-bar { padding: 3px 8px; margin-bottom: 4px; font-size: 0.75em; }
+            .container { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .card { padding: 8px; }
+            .grid-container { max-height: 140px; }
+            textarea { height: 50px; }
+            .modal-box { max-height: 90vh; padding: 12px; }
+        }
+
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
     </style>
 </head>
@@ -502,10 +531,16 @@
                     </div>
                 </div>
                 
-                <div style="overflow-x:auto; width:100%; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg); -webkit-overflow-scrolling: touch;">
+                <div id="intonation-scroll-container" class="intonation-scroll-box" onscroll="updateIntonationScrollSlider()" style="width:100%; border-radius:8px; border:1px solid var(--border-color); background:var(--panel-bg);">
                     <div id="intonation-canvas-wrapper" style="min-width:100%; width:100%;">
-                        <canvas id="intonation-canvas" style="height:140px; width:100%; cursor:crosshair; display:block;"></canvas>
+                        <canvas id="intonation-canvas" style="height:140px; width:100%; cursor:crosshair; display:block; max-width:none !important;"></canvas>
                     </div>
+                </div>
+
+                <!-- スライドバー1本化 -->
+                <div style="display:flex; align-items:center; gap:6px; margin-top:6px; background:var(--panel-bg); padding:4px 8px; border-radius:8px; border:1px solid var(--border-color);">
+                    <span style="font-size:0.75em; font-weight:bold; color:var(--primary); white-space:nowrap;">↔️ 横移動スライドバー:</span>
+                    <input type="range" id="intonation-scroll-slider" min="0" max="100" value="0" oninput="syncIntonationScroll(this.value)" style="flex:1; height:28px; accent-color:var(--primary); cursor:pointer;">
                 </div>
             </div>
 
@@ -557,7 +592,7 @@
         <div class="credit-text">Coding: Gemini ｜ Site Suggestion: <a href="https://x.com/yourei_osirase" target="_blank" rel="noopener">ゆーれい</a></div>
     </footer>
 
-    <!-- 使い方・利用規約モーダル (初期表示をflexにしてページ読み込み/更新時に即表示) -->
+    <!-- 使い方・利用規約モーダル -->
     <div class="modal-overlay" id="guide-modal" style="display:flex;">
         <div class="modal-box">
             <h3>✨ 使い方・利用規約</h3>
@@ -1306,6 +1341,27 @@
             window.addEventListener('touchend', stopDrag);
         }
 
+        function syncIntonationScroll(val) {
+            const container = document.getElementById("intonation-scroll-container");
+            if (!container) return;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            container.scrollLeft = (parseFloat(val) / 100) * maxScroll;
+        }
+
+        function updateIntonationScrollSlider() {
+            const container = document.getElementById("intonation-scroll-container");
+            const slider = document.getElementById("intonation-scroll-slider");
+            if (!container || !slider) return;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            if (maxScroll > 5) {
+                slider.disabled = false;
+                slider.value = (container.scrollLeft / maxScroll) * 100;
+            } else {
+                slider.disabled = true;
+                slider.value = 0;
+            }
+        }
+
         function romajiToHiragana(str) {
             if (!str) return "";
             let s = str.toLowerCase();
@@ -1485,7 +1541,7 @@
             const text = currentSentenceData ? currentSentenceData.text : "";
             const tokens = parseVoicedTokens(text);
 
-            const minWidthPerChar = 48;
+            const minWidthPerChar = 54;
             const parentContainer = wrapper.parentElement;
             const parentW = (parentContainer && parentContainer.clientWidth > 0) 
                 ? parentContainer.clientWidth 
@@ -1523,6 +1579,7 @@
                 ctx.font = "11px sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("文章を入力するとイントネーションが表示されます", w / 2, h / 2 + 4);
+                updateIntonationScrollSlider();
                 return;
             }
 
@@ -1612,6 +1669,8 @@
                     ctx.fillText(p.char, p.x, p.y < centerY ? p.y - 10 : p.y + 18);
                 });
             }
+
+            setTimeout(updateIntonationScrollSlider, 0);
         }
 
         let activeNodeIdx = -1;
