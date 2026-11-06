@@ -131,20 +131,24 @@
 </script>
 
 <script>
-  const btn = document.getElementById('js-hamburger');
-  const nav = document.getElementById('js-nav');
-  const navLinks = document.querySelectorAll('.sp-nav a');
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('js-hamburger');
+    const nav = document.getElementById('js-nav');
+    const navLinks = document.querySelectorAll('.sp-nav a');
 
-  btn.addEventListener('click', () => {
-    btn.classList.toggle('is-active');
-    nav.classList.toggle('is-active');
-  });
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('is-active');
+        nav.classList.toggle('is-active');
+      });
 
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      btn.classList.remove('is-active');
-      nav.classList.remove('is-active');
-    });
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          btn.classList.remove('is-active');
+          nav.classList.remove('is-active');
+        });
+      });
+    }
   });
 </script>
 
