@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <title>ゆーれい</title>
+   <link rel="icon" href="photo/favicon.png">
+   <link rel="apple-touch-icon" href="photo/favicon.png">
+   <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+   <body>
+
+        <div id="header-container"></div>
+
+        <main class="content-wrapper">
+
+         <section id="utau">
+            <h1>幽音 ゆゆ</h1>
+
+           <div class="music-player2">
+           <audio src="music/utau.mp3"controls controlsList="nodownload noremoteplayback"></audio>
+         </div>
+         
+                <h2>利用規約</h2>
+                <p>人に迷惑をかける使い方はしないで下さい。<br>
+                音源データそのものを素材として使用しないでください。</p><br>
+            <ul>
+                <li>OKなこと</li>
+                <p>幽音 ゆゆに楽曲を歌わせ、動画投稿サイトやSNSに投稿する事</p><br>
+                <li>禁止事項</li>
+                <p>R18表現、キャラクターデザインの盗用、自作発言<br>
+                    原音、出力音源、立ち絵を機械学習素材に使う事</p><br>
+                <li>原音設定について</li>
+                <p>修正、改変などOKですが、再配布は<br>
+                yuneyuyu.0317@gmail.com<br>
+                までご相談下さい。</p><br>
+                <li>質問など</li>
+                <p>上記のメールアドレスにお願いします。</p><br>
+                <li>中の人、キャラクターデザイン</li>
+                <p>ゆーれい、アイ様</p>
+            </ul><br>
+
+            <h2>プロフィール</h2>
+            <ul>
+                <li>名前：幽音 ゆゆ</li><br>
+                <li>名前の読み：ゆうね ゆゆ</li><br>
+                <li>名前の表記：Yuune Yuyu</li><br>
+                <li>年齢：17歳</li><br>
+                <li>身長＆体重：158cm＆無</li><br>
+                <li>誕生日：9月30日</li><br>
+                <li>キャラクターデザイン：アイ様</li><br>
+            </ul>
+
+            <h2>配布所リンク</h2>
+            <div class="booth-link">
+                <a href="https://youreinodeban46.booth.pm/items/8108738" target="_blank" class="btn-booth">音源を入手する</a>
+            </div>
+            <p>※BOOTHに飛びます。</p>
+
+      </main>
+
+      <script>
+        fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+        });
+
+        fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+      </script>
+
+      <div id="footer-container"></div>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    });
+
+    document.querySelectorAll('.fade-in-box').forEach((img) => {
+        observer.observe(img);
+    });
+</script>
+
+<script>
+    const swiper = new Swiper(".mySwiper",{
+      loop: true,
+      autoplay:{ delay: 3000},
+      navigation:{
+         nextEl: ".swiper-button-next",
+         prevEl: ".swiper-button-prev",
+      },
+    });
+</script>
+
+<a href="#" id="back-to-top">▲ TOP</a>
+
+<script>
+    const topBtn = document.getElementById('back-to-top');
+
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 300) {
+            topBtn.style.display = 'block';
+    } else {
+        topBtn.style.display = 'none';
+    }
+});
+</script>
+
+   </body>
+   </html>

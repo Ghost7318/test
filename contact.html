@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+   <meta charset="UTF-8">
+   <title>ゆーれい</title>
+   <link rel="icon" href="photo/favicon.png">
+   <link rel="apple-touch-icon" href="photo/favicon.png">
+   <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+   <body>
+
+        <div id="header-container"></div>
+
+        <main class="content-wrapper">
+
+         <section id="contact">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdVRMfMKHBk87wOP5y6pi4Ca2n0iK54XW1JatqCd6gXjBxwXQ/viewform?embedded=true" width="640" height="1012" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+            
+      </main>
+
+      <script>
+        fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+        });
+
+        fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        });
+      </script>
+
+      <div id="footer-container"></div>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    });
+
+    document.querySelectorAll('.fade-in-box').forEach((img) => {
+        observer.observe(img);
+    });
+</script>
+
+<script>
+    const swiper = new Swiper(".mySwiper",{
+      loop: true,
+      autoplay:{ delay: 3000},
+      navigation:{
+         nextEl: ".swiper-button-next",
+         prevEl: ".swiper-button-prev",
+      },
+    });
+</script>
+
+<a href="#" id="back-to-top">▲ TOP</a>
+
+<script>
+    const topBtn = document.getElementById('back-to-top');
+
+    window.addEventListener('scroll', () => {
+        if(window.scrollY > 300) {
+            topBtn.style.display = 'block';
+    } else {
+        topBtn.style.display = 'none';
+    }
+});
+</script>
+
+   </body>
+   </html>
